@@ -1,13 +1,12 @@
 <?php
-
 $songQuery = mysqli_query($con, "SELECT id FROM Songs ORDER BY RAND() LIMIT 10");
 $resultArray = array();
-
-while ($row = mysqli_fetch_array($songQuery)) {
-    array_push($resultArray, $row['id']);
-}
+    while($row = mysqli_fetch_array($songQuery)) {
+        array_push($resultArray, $row['id']);
+    }
 
 $jsonArray = json_encode($resultArray);
+
 ?>
 
 <script>
@@ -97,7 +96,9 @@ $jsonArray = json_encode($resultArray);
             });
 
             audioElement.setTrack(track);
-            playSong();
+            if(play == true){
+                playSong();
+            }
         });
 
         if (play == true) {
@@ -106,17 +107,15 @@ $jsonArray = json_encode($resultArray);
     }
 
     function playSong() {
+        if(audioElement.audio.currentTime == 0){
+            $.post("includes/handlers/ajax/updatePlays.php", { songId: audioElement.currentlyPlaying.id});
+        }
         $(".controlButton.play").hide();
         $(".controlButton.pause").show();
         audioElement.play();
     }
 
     function pauseSong() {
-
-        if(audioElement.audio.currentTime == 0){
-            $.post("includes/handlers/ajax/updatePlays.php", { songId: audioElement.currentlyPlaying.id});
-        }
-
         $(".controlButton.play").show();
         $(".controlButton.pause").hide();
         audioElement.pause();
@@ -163,7 +162,7 @@ $jsonArray = json_encode($resultArray);
                         <img src="assets/images/icons/pause.png" alt="暫停">
                     </button>
 
-                    <button class="controlButton next" title="下一首">
+                    <button class="controlButton next" title="下一首" onclick="nextSong()">
                         <img src="assets/images/icons/next.png" alt="下一首">
                     </button>
 

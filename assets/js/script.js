@@ -3,7 +3,7 @@ var audioElement;
 var mouseDown = false;
 var currentIndex = 0;
 
-function formateTime(seconds){
+function formatTime(seconds){
     var time = Math.round(seconds);
     var minutes = Math.floor(time / 60); //四捨五入
     var seconds = time - (minutes * 60); 
@@ -14,8 +14,8 @@ function formateTime(seconds){
 }
 
 function updateTimeProgressBar(audio){
-    $(".porgressTime.current").text(formateTime(audio.currentTime));
-    $(".porgressTime.remaining").text(formateTime(audio.duration - audio.currentTime));
+    $(".porgressTime.current").text(formatTime(audio.currentTime));
+    $(".porgressTime.remaining").text(formatTime(audio.duration - audio.currentTime));
 
     var progress = audio.currentTime / audio.duration * 100;
     $(".playbackBar .progress").css("width", progress + "%");
@@ -30,8 +30,8 @@ function Audio(){
     this.currentlyPlaying;
     this.audio = document.createElement('audio');
 
-    this.audio.addEventListener("canPlay", function(){
-        var duration = formateTime(this.duration);
+    this.audio.addEventListener("canplay", function(){
+        var duration = formatTime(this.duration);
         $(".progressTime.remaining").text(duration);
     });
 
