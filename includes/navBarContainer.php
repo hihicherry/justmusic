@@ -1,28 +1,28 @@
 <div id="navBarContainer">
     <nav class="navBar">
-        <a href="index.php" class="logo">
+        <span role="link" tabindex="0" onclick="openPage('index.php')" class="logo">
             <img src="assets/images/icons/logo.png" alt="JustMusic">
-        </a>
+        </span>
 
         <div class="group">
             <div class="navItem">
-                <a href="search.php" class="navItemLink">搜尋
+                <span role='link' tabindex='0' onclick="openPage('search.php')" class="navitemlink">搜尋
                     <img src="assets/images/icons/search.png" alt="搜尋" class="icon">
-                </a>
+                </span>
             </div>
         </div>
 
         <div class="group">
             <div class="navItem">
-                <a href="browse.php" class="navItemLink">瀏覽</a>
+                <span role="link" tabindex="0" onclick="openPage('browse.php')" class="navItemLink">瀏覽</span>
             </div>
 
             <div class="navItem">
-                <a href="yourMusic.php" class="navItemLink">你的音樂</a>
+                <span role="link" tabindex="0" onclick="openPage('yourMusic.php')" class="navItemLink">你的音樂</span>
             </div>
 
             <div class="navItem">
-                <a href="profile.php" class="navItemLink">使用者名稱</a>
+               <span role="link" tabindex="0" onclick="openPage('settings.php')" class="navItemLink"><?php echo $userLoggedIn->getFirstAndLastName(); ?></span>
             </div>
         </div>
     </nav>

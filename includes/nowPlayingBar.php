@@ -11,9 +11,9 @@ $jsonArray = json_encode($resultArray);
 
 <script>
     $(document).ready(function() {
-        currentPlaylist = <?php echo $jsonArray; ?>;
+        var newPlaylist = <?php echo $jsonArray; ?>;
         audioElement = new Audio();
-        setTrack(currentPlaylist[0], currentPlaylist, false);
+        setTrack(newPlaylist[0], newPlaylist, false);
         updateVolumeProgressBar(audioElement.audio);
 
         $("#nowPlayingBarContainer").on("mousedown touchstart mousemove touchmove", function(e){
@@ -66,33 +66,95 @@ $jsonArray = json_encode($resultArray);
         audioElement.setTime(seconds);
     }
 
+    function prevSong(){
+        if(audioElement.audio.currentTime >= 3 || currentIndex == 0){
+            audioElement.setTime(0);
+        }else{
+            currentIndex = currentIndex - 1;
+            setTrack(currentPlaylist[currentIndex], currentPlaylist, true);
+        }
+    }
+
     function nextSong(){
+        if(repeat == true){
+            audioElement.setTime(0);
+            playSong();
+            return;
+        }
+
         if(currentIndex == currentPlaylist.length - 1){
             currentIndex = 0;
         }else{
             currentIndex++;
         }
-        var trackToPlay = currentPlaylist['currentIndex'];
+        var trackToPlay = shuffle ? shufflePlaylist[currentIndex] : currentPlaylist[currentIndex];
         setTrack(trackToPlay, currentPlaylist, true);
     }
 
+    function setRepeat(){
+        repeat = !repeat;
+        var imageName = repeat ? "repeat-active.png" : "repeat.png";
+        $(".controlButton.repeat img").attr("src", "assets/images/icons/" + imageName);
+    }
+
+    function setMute(){
+        audioElement.audio.muted = !audioElement.audio.muted;
+        var imageName = audioElement.audio.muted ? "volume-mute.png" : "volume.png";
+        $(".controlButton.volume img").attr("src", "assets/images/icons/" + imageName);
+    }
+
+    function setShuffle(){
+        shuffle = ! shuffle;
+        var imageName = shuffle ? "shuffle-active.png" : "shuffle.png";
+        $(".controlButton.shuffle img").attr("src", "assets/images/icons/" + imageName);
+
+        if(shuffle == true){
+            shuffleArray(shufflePlaylist);
+            currentIndex = shufflePlaylist.indexOf(audioElement.currentlyPlaying.id)
+        }else{
+            currentIndex = currentPlaylist.indexOf(audioElement.currentlyPlaying.id)
+        }
+    }
+
+    function shuffleArray(a){
+        var j, x, i;
+	    for (i = a.length - 1; i > 0; i--) {
+	        j = Math.floor(Math.random() * (i + 1));
+	        x = a[i];
+	        a[i] = a[j];
+	        a[j] = x;
+	    } 
+	    return a;
+	    }
+
     function setTrack(trackId, newPlaylist, play) {
+        if(newPlaylist != currentPlaylist){
+            currentPlaylist = newPlaylist;
+            shufflePlaylist = currentPlaylist.slice();
+            shuffleArray(shufflePlaylist);
+        }
+        if(shuffle == true){
+            currentIndex = shufflePlaylist.indexOf(trackId);
+        }else{
+            currentIndex = currentPlaylist.indexOf(trackId);
+        }
 
         $.post("includes/handlers/ajax/getSongJson.php", {songId: trackId }, function(data) {
-
-            currentIndex = currentPlaylist.indexOf(trackId);
 
             var track = JSON.parse(data);
             $(".trackName span").text(track.title);
 
             $.post("includes/handlers/ajax/getArtistJson.php", {artistId: track.artist }, function(data) {
                 var artist = JSON.parse(data);
-                $(".artistName span").text(artist.name);
+                $(".trackInfo .artistName span").text(artist.name);
+                $(".trackInfo .artistName span").attr("onclick", "openPage('artist.php?id=" + artist.id + "')");
             });
 
             $.post("includes/handlers/ajax/getAlbumJson.php", {albumId: track.album }, function(data) {
                 var album = JSON.parse(data);
-                $(".albumLink img").attr("src", album.artworkPath);
+                $(".content .albumLink img").attr("src", album.artworkPath);
+                $(".content .albumLink img").attr("onclick", "openPage('album.php?id=" + album.id + "')");
+                $(".trackInfo .trackName span").attr("onclick", "openPage('album.php?id=" + album.id + "')");
             });
 
             audioElement.setTrack(track);
@@ -100,10 +162,6 @@ $jsonArray = json_encode($resultArray);
                 playSong();
             }
         });
-
-        if (play == true) {
-            audioElement.play();
-        }
     }
 
     function playSong() {
@@ -127,16 +185,16 @@ $jsonArray = json_encode($resultArray);
         <div id="nowPlayingLeft">
             <div class="content">
                 <span class="albumLink">
-                    <img class="albumArtwork" src="" alt="">
+                    <img role="link" tabindex="0" class="albumArtwork" src="" alt="">
                 </span>
 
                 <div class="trackInfo">
                     <span class="trackName">
-                        <span></span>
+                        <span role="link" tabindex="0" ></span>
                     </span>
 
                     <span class="artistName">
-                        <span></span>
+                        <span role="link" tabindex="0"></span>
                     </span>
 
                 </div>
@@ -147,10 +205,10 @@ $jsonArray = json_encode($resultArray);
             <div class="content playerControls">
                 <div class="buttons">
                     <button class="controlButton shuffle" title="隨機播放">
-                        <img src="assets/images/icons/shuffle.png" alt="隨機播放">
+                        <img src="assets/images/icons/shuffle.png" alt="隨機播放" onclick="setShuffle()">
                     </button>
 
-                    <button class="controlButton previous" title="上一首">
+                    <button class="controlButton previous" title="上一首" onclick="prevSong()">
                         <img src="assets/images/icons/previous.png" alt="上一首">
                     </button>
 
@@ -166,7 +224,7 @@ $jsonArray = json_encode($resultArray);
                         <img src="assets/images/icons/next.png" alt="下一首">
                     </button>
 
-                    <button class="controlButton repeat" title="循環播放">
+                    <button class="controlButton repeat" title="循環播放" onclick="setRepeat()">
                         <img src="assets/images/icons/repeat.png" alt="循環播放">
                     </button>
                 </div>
@@ -188,7 +246,7 @@ $jsonArray = json_encode($resultArray);
 
         <div id="nowPlayingRight">
             <div class="volumeBar">
-                <button class="controlButton volume" title="音量">
+                <button class="controlButton volume" title="音量" onclick="setMute()">
                     <img src="assets/images/icons/volume.png" alt="音量">
                 </button>
 

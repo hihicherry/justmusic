@@ -1,35 +1,39 @@
-<?php include("includes/includedFiles.php");  
+<?php
+include("includes/includedFiles.php");
 
     if(isset($_GET['id'])){
-        $albumId = $_GET['id'];
+        $artistId =  $_GET['id'];
     }else{
         header("Location: index.php");
     }
 
-    $album = new Album($con, $albumId);
-    $artist = $album->getArtist();
-    $artistId = $artist->getId();
+    $artist = new Artist($con, $artistId);
 ?>
 
-<div class="entityInfo">
-    <div class="leftSection">
-        <img src="<?php echo $album->getArtworkPath(); ?>" alt="">
-    </div>
+<div class="entityInfo borderBottom">
+    <div class="centerSection">
+        <div class="artistInfo">
+            <h1 class="artistName"><?php echo $artist->getName(); ?></h1>
 
-    <div class="rightSection">
-        <h2><?php echo $album->getTitle();?></h2>
-        <p role="link"  tabindex="0" onclick="openPage('artist.php?id=$artistId')">演唱者：<?php echo $artist->getName(); ?></p>
-        <p>共<?php echo $album->getNumberOfSongs(); ?>首歌曲</p>
+            <div class="headerButtons">
+                <button class="button purple" onclick="playFirstSong()">播放</button>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="tracklistContainer">
+<div class="tracklistContainer borderBottom">
+    <h2>音樂</h2>
     <ul class="tracklist">
         <?php 
-            $songIdArray = $album->getSongIds();
+            $songIdArray = $artist->getSongIds();
 
             $i = 1;
             foreach($songIdArray as $songId){
+                if($i > 5){
+                    break;
+                }
+
                 $albumSong = new Song($con, $songId);
                 $albumArtist = $albumSong->getArtist();
 
@@ -44,7 +48,7 @@
                             <span class='artistName'>". $albumArtist->getName() ."</span>
                         </div>
 
-						<div class='trackOptions'>
+                        <div class='trackOptions'>
 							<input type='hidden' class='songId' value='".$albumSong->getId()."'>
                             <img class='optionsButton' src='assets/images/icons/more.png' onclick='showOptionsMenu(this)'>
                         </div>
@@ -62,6 +66,26 @@
             tempPlaylist = JSON.parse(tempSongIds);
         </script>
     </ul>
+</div>
+
+<div class="gridViewContainer">
+    <h2>專輯</h2>
+    <?php
+        $albumQuery = mysqli_query($con, "SELECT * FROM albums WHERE artist='$artistId'");
+
+        while($row = mysqli_fetch_array($albumQuery)){
+
+            echo "<div class='gridViewItem'>
+                <span role='link' tabindex='0' onclick='openPage(\"album.php?id=". $row['id'] . "\")'>
+                    <img src='". $row['artworkPath'] ."'>
+                    <div class='gridViewInfo'>"
+                        . $row['title'] .
+                    "</div>
+                </span>
+                </div>";
+        }
+    
+    ?>
 </div>
 
 <nav class="optionsMenu">

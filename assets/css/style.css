@@ -361,5 +361,133 @@ body{
  	margin-bottom: 7px;
  }
 
+ .artistInfo{
+	 text-align: center;
+ }
 
+.button{
+	 color: #4f4d5f;
+	 cursor: pointer;
+	 margin-bottom: 10px;
+	 background-color: transparent;
+	 font-weight: 500;
+	 letter-spacing: 2px;
+	 border: 2px solid #4f4d5f;
+	 border-radius: 500px;
+	 padding: 15px;
+	 min-width: 120px;
+	 font-size: 13px;
+ }
 
+ .button.purple{
+	 background-color: rgb(200, 197, 211);
+	 border-color: rgb(200, 197, 211);
+ }
+
+ .borderBottom{
+	 border-bottom: 1px solid #8985a1;
+	 margin-bottom: 20px;
+ }
+
+ .tracklistContainer h2,
+ .gridViewContainer h2,
+ .artistsContainer h2{
+	 text-align: center;
+ }
+
+ [role="link"]{
+	 cursor: pointer;
+ }
+
+ .searchContainer{
+	 background-color: rgb(200, 197, 211);
+	 padding: 20px 28px;
+ }
+
+ .searchContainer h4{
+	 margin: 0;
+	 font-weight: 300px;
+ }
+
+ .searchContainer .searchInput{
+	 width: 100%;
+	 background-color: transparent;
+	 border: none;
+	 color: #5f5e6d;
+	 font-weight: 700px;
+	 font-size: 40px;
+	 letter-spacing: 2px;
+ }
+
+ input:focus{
+	 outline: none;
+ }
+
+ .searchResultRow{
+	 padding: 15px 10px;
+ }
+
+ .searchResultRow:hover{
+	 background-color: rgb(193, 182, 202, 0.7);
+ }
+
+ .searchResultRow .artistName span{
+	 color: #5f5e6d;
+ }
+
+ .noResults span{
+	 margin: 15px;
+	 display: block;
+ }
+
+ .buttonItems .button{
+	 display: block;
+	 margin: 0 auto 20px auto;
+ }
+
+ .playlistsContainer{
+	 padding: 10px 0;
+ }
+
+ .playlistImage{
+	 /*border: 3px solid #34495E;*/
+	 padding: 10px;
+ }
+
+.optionsMenu{
+	position: fixed;
+	background-color: rgba(147, 126, 165, 0.7);
+	width: 200px;
+	border: 1px solid rgba(175, 168, 182, 0.459);
+	border-radius: 3px;
+	z-index: 1000;
+	display: none;
+}
+
+.optionsMenu .item{
+	width: 100%;
+	padding: 12px 20px;
+	box-sizing: border-box;
+	font-weight: 400;
+	color: #4f4d5fc7;
+	cursor: pointer;
+	height: 40px;
+	background-color: rgba(147, 126, 165, 0.7);
+	font-size: 14px;
+}
+
+.optionsMenu .item:hover{
+	color: #dfddf1;
+	background-color: rgb(154, 135, 170);
+	border-color: rgb(154, 135, 170);
+}
+
+.item.playlist{
+	border: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+
+.userInfo h1{
+	text-align: center;
+}
